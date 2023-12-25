@@ -1,0 +1,76 @@
+global:
+  scrape_interval: 15s # 抓取间隔. Default is every 1 minute.
+  evaluation_interval: 15s # 评估规则时间. The default is every 1 minute.
+  scrape_timeout: 10s # 抓取超时时间. scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - 192.168.1.1:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  - "rules/*.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+
+####################################
+#          node_exporter           #
+####################################
+  - job_name: "Secs_DMZ_Node"
+    file_sd_configs:
+    - refresh_interval: 1m
+      files:
+      - "/etc/prometheus/conf/node_dmz.yml"
+
+####################################
+#          icmp_ping               #
+####################################
+  - job_name: "DMZ_icmp_ping"
+    metrics_path: /probe
+    params:
+      module: [icmp]  # 使用icmp模块
+    file_sd_configs:
+    - refresh_interval: 1m
+      files:
+      - "/etc/prometheus/conf/ping_check.yml"
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.1.1:9115
+
+####################################
+#          http_check              #
+####################################
+  - job_name: "http_check"
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  #使用http模块
+    file_sd_configs:
+    - refresh_interval: 1m
+      files:
+      - "/etc/prometheus/conf/http_check.yml"
+    relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_module]
+      target_label: module
+    - source_labels: [company]
+      target_label: company
+    - source_labels: [env]
+      target_label: env
+    - source_labels: [name]
+      target_label: name
+    - source_labels: [project]
+      target_label: project
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: 192.168.1.1:9115

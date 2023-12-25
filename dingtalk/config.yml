@@ -1,0 +1,16 @@
+## Request timeout
+#timeout: 5s
+
+templates:
+  - /opt/dingtalk/dingtalk.tmpl
+
+targets:
+  webhook1:
+    url: https://oapi.dingtalk.com/robot/send?access_token=xxxx
+    secret: xxx
+    mention:
+      mobiles: ['11111111111','22222222222','33333333333']
+    message:
+      text: |
+        @11111111111 @22222222222 @33333333333
+        {{ template "ding.link.content" . }}

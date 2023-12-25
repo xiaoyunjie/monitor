@@ -1,0 +1,12 @@
+groups:
+- name: 业务系统访问监控
+  rules:
+  - alert: 网站系统状态异常
+    expr:  probe_http_status_code{job="http_check"} >= 400 or probe_success{job=~"http_check"} == 0
+    for: 1m
+    labels:
+      severity: 严重告警
+      team: ops
+    annotations:
+      summary: "{{ $labels.name }} 网站不可访问"
+      description: "{{$labels.env}}_{{$labels.name}}({{$labels.project}}) 不可访问,请及时查看, 当前状态: {{ $value }}\n> {{$labels.instance}}"

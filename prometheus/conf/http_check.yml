@@ -1,0 +1,7 @@
+- targets:
+  - 'https://www.baidu.com'
+  labels:
+    company: 'abc'
+    env: 'prod'
+    name: '百度'
+    project: '网站监控'

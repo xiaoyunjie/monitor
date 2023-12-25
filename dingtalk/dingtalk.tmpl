@@ -1,0 +1,69 @@
+{{ define "__subject" }}[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .GroupLabels.SortedPairs.Values | join " " }} {{ if gt (len .CommonLabels) (len .GroupLabels) }}({{ with .CommonLabels.Remove .GroupLabels.Names }}{{ .Values | join " " }}{{ end }}){{ end }}{{ end }}
+{{ define "__alertmanagerURL" }}{{ .ExternalURL }}/#/alerts?receiver={{ .Receiver }}{{ end }}
+
+{{ define "default.__text_alert_list" }}{{ range . }}
+---
+
+**告警主题**: {{ .Annotations.summary }}
+
+**告警类型**: {{ .Labels.alertname }}
+
+**告警级别**: {{ .Labels.severity }}
+
+**告警主机**: {{ .Labels.instance }}
+
+**告警信息**: {{ index .Annotations "description" }}
+
+**Graph:** [📈]({{ .GeneratorURL }})
+
+**分组名称**: {{ .Labels.job }}
+
+**通知部门**: {{ .Labels.team }}
+
+**告警时间**: {{ dateInZone "2006.01.02 15:04:05" (.StartsAt) "Asia/Shanghai" }}
+{{ end }}{{ end }}
+
+{{ define "default.__text_resolved_list" }}{{ range . }}
+---
+
+**告警主题**: {{ .Annotations.summary }}
+
+**告警类型**: {{ .Labels.alertname }}
+
+**告警级别**: {{ .Labels.severity }}
+
+**告警主机**: {{ .Labels.instance }}
+
+**告警信息**: {{ index .Annotations "description" }}
+
+**Graph:** [📈]({{ .GeneratorURL }})
+
+**分组名称**: {{ .Labels.job }}
+
+**通知部门**: {{ .Labels.team }}
+
+**告警时间**: {{ dateInZone "2006.01.02 15:04:05" (.StartsAt) "Asia/Shanghai" }}
+
+**恢复时间**: {{ dateInZone "2006.01.02 15:04:05" (.EndsAt) "Asia/Shanghai" }}
+{{ end }}{{ end }}
+
+{{/* Default */}}
+{{ define "default.title" }}{{ template "__subject" . }}{{ end }}
+{{ define "default.content" }}
+\[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}\] **[{{ index .GroupLabels "alertname" }}]({{ template "__alertmanagerURL" . }})**
+{{ if gt (len .Alerts.Firing) 0 -}}
+![警报 图标](http://wx4.sinaimg.cn/large/006APoFYly1g0ggpt1aq3j306o06o3yt.jpg)
+
+**====侦测到故障====**    {{ template "default.__text_alert_list" .Alerts.Firing }}
+{{- end }}
+
+{{ if gt (len .Alerts.Resolved) 0 -}}
+![警报 图标](https://i01piccdn.sogoucdn.com/2dbf8a9d48e921e7)
+
+**====故障已修复====**    {{ template "default.__text_resolved_list" .Alerts.Resolved }}
+{{- end }}
+{{- end }}
+
+{{/* Following names for compatibility */}}
+{{ define "ding.link.title" }}{{ template "default.title" . }}{{ end }}
+{{ define "ding.link.content" }}{{ template "default.content" . }}{{ end }}

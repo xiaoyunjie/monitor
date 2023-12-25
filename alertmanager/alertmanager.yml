@@ -1,0 +1,24 @@
+route:
+  group_by: ['alertname', 'severity', 'namespace']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 8h
+  receiver: 'dingding.webhook1'
+  routes:
+  - receiver: 'dingding.webhook1'
+    match_re:
+      alertname: ".*"
+receivers:
+  - name: 'dingding.webhook1'
+    webhook_configs:
+    - url: http://192.168.1.1:8060/dingtalk/webhook1/send # 告警 dingtalk Webhook URL
+      send_resolved: true # 是否发送已解决的告警。如果设置为 true，则在告警解决时发送通知
+inhibit_rules:
+  #匹配当前告警发生后其他告警抑制掉
+  - source_match:
+      severity: 'critical'
+    # 被抑制告警
+    target_match:
+      severity: 'warning'
+    # 只有包含指定标签才可成立规则,这里表示两个告警级别的主机都“相同”时，成功抑制 ，这里也可以写多个标签
+    equal: ['alertname', 'dev', 'instance']

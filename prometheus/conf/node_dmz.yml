@@ -1,0 +1,5 @@
+# 采集node exporter监控数据
+- targets:
+  - '192.168.1.1:9100'
+  labels:
+    instance: 'prometheus_node-1.1'
