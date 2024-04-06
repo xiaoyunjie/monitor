@@ -2,7 +2,7 @@ groups:
 - name: 网络设备ping检测
   rules:
   - alert: 网络设备不可达
-    expr: probe_success{job=~"DMZ_icmp_ping"} == 0
+    expr: probe_success{job=~"icmp_ping"} == 0
     for: 15s
     labels:
       severity: 严重告警

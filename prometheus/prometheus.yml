@@ -21,7 +21,7 @@ scrape_configs:
 ####################################
 #          node_exporter           #
 ####################################
-  - job_name: "Secs_DMZ_Node"
+  - job_name: "dmz_node"
     file_sd_configs:
     - refresh_interval: 1m
       files:
@@ -30,7 +30,7 @@ scrape_configs:
 ####################################
 #          icmp_ping               #
 ####################################
-  - job_name: "DMZ_icmp_ping"
+  - job_name: "icmp_ping"
     metrics_path: /probe
     params:
       module: [icmp]  # 使用icmp模块
