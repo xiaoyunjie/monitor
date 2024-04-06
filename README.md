@@ -42,6 +42,7 @@ mkdir -p /opt/monitor/prometheus/data && chmod 777 /opt/monitor/prometheus/data
 
 docker run -d \
 --name=prometheus \
+--user=root \
 --privileged=true \
 --restart=always \
 -p 9090:9090 \
