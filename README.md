@@ -38,7 +38,7 @@ cd /opt && git clone https://github.com/xiaoyunjie/monitor
 ## 手动安装
 ## prometheus
 ```bash
-mkdir -p /opt/prometheus/data && chmod 777 /opt/prometheus/data
+mkdir -p /opt/monitor/prometheus/data && chmod 777 /opt/monitor/prometheus/data
 
 docker run -d \
 --name=prometheus \
