@@ -42,6 +42,7 @@ mkdir -p /opt/monitor/prometheus/data && chmod 777 /opt/monitor/prometheus/data
 
 docker run -d \
 --name=prometheus \
+--privileged=true \
 --restart=always \
 -p 9090:9090 \
 -v /opt/monitor/prometheus:/etc/prometheus \
@@ -61,6 +62,7 @@ mkdir -p /opt/monitor/grafana-storage &&  chmod 777 -R  /opt/monitor/grafana-sto
 docker run -itd \
 --name=grafana \
 --restart=always \
+--privileged=true \
 -p 3000:3000 \
 -v /opt/monitor/grafana-storage:/var/lib/grafana \
 grafana/grafana:10.0.3
@@ -78,6 +80,7 @@ cd linux_node_export && ./install
 ## alertmanager
 ```bash
 docker run -d --name=alertmanager \
+--privileged=true \
 --restart=always \
 -p 9093:9093 \
 -v /opt/monitor/alertmanager:/etc/alertmanager \
@@ -91,6 +94,7 @@ prom/alertmanager \
 ```bash
 docker run -d --name=dingtalk \
 --restart=always \
+--privileged=true \
 -p 8060:8060 \
 -v /opt/monitor/dingtalk:/opt/dingtalk \
 timonwong/prometheus-webhook-dingtalk:v2.1.0 \
@@ -104,6 +108,7 @@ timonwong/prometheus-webhook-dingtalk:v2.1.0 \
 ```bash
 docker run -d --name=dingtalk \
 --restart=always \
+--privileged=true \
 -p 8060:8060 \
 -e https_proxy="192.168.1.1:8000" \
 -v /opt/monitor/dingtalk:/opt/dingtalk \
@@ -120,6 +125,7 @@ timonwong/prometheus-webhook-dingtalk:v2.1.0 \
 ```bash
 docker run  -d --name=blackbox_exporter \
 --restart=always \
+--privileged=true \
 -p 9115:9115 \
 -v /opt/monitor/blackbox_exporter:/config \
 prom/blackbox-exporter:master \
