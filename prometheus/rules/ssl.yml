@@ -3,7 +3,7 @@ groups:
   rules:
   - alert: "SSL证书过期警告"
     expr: (probe_ssl_earliest_cert_expiry{job="http_check"} - time())/86400 < 30
-    for: 2m
+    for: 1h
     labels:
       severity: 严重告警
       team: ops
